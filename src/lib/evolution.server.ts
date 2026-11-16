@@ -178,7 +178,11 @@ export async function evoFetchNumberFromInstance(instanceName: string): Promise<
       method: "GET",
     });
     const inst = Array.isArray(data) ? data[0] : data?.[0] ?? data;
-    return inst?.instance?.owner || inst?.owner || inst?.number || null;
+    const ownerJid: string | null = inst?.ownerJid ?? null;
+    if (ownerJid) {
+      return ownerJid.split("@")[0].replace(/\D/g, "");
+    }
+    return inst?.number ?? null;
   } catch {
     return null;
   }

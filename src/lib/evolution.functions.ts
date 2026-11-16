@@ -92,14 +92,14 @@ export const connectWhatsapp = createServerFn({ method: "POST" })
     let qrBase64: string | null = null;
     let code: string | null = null;
     let lastQrError: unknown = null;
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 12; i++) {
       try {
         const qr = await evoGetQr(instanceName);
         qrBase64 = qr.qrBase64;
         code = qr.code;
         if (qrBase64 || code) break;
       } catch (e) { lastQrError = e; console.warn("[evolution.connect]", e); }
-      await new Promise((r) => setTimeout(r, 800));
+      await new Promise((r) => setTimeout(r, 1000));
     }
 
     if (!qrBase64 && !code && lastQrError) {
