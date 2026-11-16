@@ -37,6 +37,8 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "Sua IA atende o WhatsApp 24h e organiza o CRM sozinha.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Landing,

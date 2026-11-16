@@ -34,3 +34,7 @@ Se o usuário conectou um Supabase próprio, uma mensagem no início desta conve
 - Nunca jogue texto vindo do usuário direto em `innerHTML` sem escapar (risco de XSS) -- prefira `textContent`, ou escape antes de montar HTML por concatenação.
 - Nunca deixe chave/segredo real hardcoded em código que o navegador baixa.
 - Código nunca vai pro chat -- só nos arquivos. No chat, no máximo 1-3 frases curtas de status.
+
+## Architecture
+
+- Manual company activation must reuse the existing authenticated master status action with `suspend: false`, through the tested browser-safe activation helper, to preserve server-side authorization and avoid changing billing or credits.

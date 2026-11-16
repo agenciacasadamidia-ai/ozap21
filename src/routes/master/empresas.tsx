@@ -6,14 +6,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { LogIn, Pause, Play, CalendarClock, Loader2, KeyRound, Eye, Sparkles } from "lucide-react";
 import { brand } from "@/config/brand";
 import { listCompanies, suspendCompany, extendTrial, resetCompanyOwnerPassword, getCompanyDetails } from "@/lib/master.functions";
 import { adminGrantCredits } from "@/lib/credits.functions";
+import { activateCompanyManually } from "@/lib/company-activation";
 
 export const Route = createFileRoute("/master/empresas")({
-  head: () => ({ meta: [{ title: `${brand.name} — Empresas` }] }),
+  head: () => ({ meta: [
+    { title: `${brand.name} — Empresas` },
+    { name: "description", content: "Gerencie empresas, acesso de clientes e ativações manuais no Painel Master." },
+    { property: "og:title", content: `${brand.name} — Empresas` },
+    { property: "og:description", content: "Gestão de empresas e acesso de clientes no Painel Master." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary_large_image" },
+  ] }),
   component: EmpresasPage,
 });
 
@@ -33,6 +42,8 @@ function EmpresasPage() {
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [activationTarget, setActivationTarget] = useState<{ id: string; nome: string } | null>(null);
+  const [activating, setActivating] = useState(false);
 
   async function reload() {
     setLoading(true);
@@ -58,6 +69,21 @@ function EmpresasPage() {
     await suspend({ data: { companyId: c.id, suspend: next } });
     toast.success(next ? "Empresa suspensa" : "Empresa reativada");
     reload();
+  }
+
+  async function doActivate() {
+    if (!activationTarget || activating) return;
+    setActivating(true);
+    try {
+      await activateCompanyManually(activationTarget.id, suspend);
+      toast.success(`Empresa "${activationTarget.nome}" ativada manualmente`);
+      setActivationTarget(null);
+      await reload();
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "Falha ao ativar empresa");
+    } finally {
+      setActivating(false);
+    }
   }
 
   async function doExtend(c: any) {
@@ -134,14 +160,15 @@ function EmpresasPage() {
         </form>
       </div>
 
-      <Card className="overflow-hidden">
+      <Card className="overflow-x-auto">
+        <div className="min-w-[1050px]">
         <div className="grid grid-cols-12 text-xs font-medium text-muted-foreground bg-muted/50 px-4 py-2">
-          <div className="col-span-3">Nome</div>
-          <div className="col-span-2">Status</div>
+          <div className="col-span-2">Nome</div>
+          <div className="col-span-1">Status</div>
           <div className="col-span-2">Trial até</div>
           <div className="col-span-2">Criada</div>
           <div className="col-span-1">Atividade</div>
-          <div className="col-span-2 text-right">Ações</div>
+          <div className="col-span-4 text-right">Ações</div>
         </div>
         {loading ? (
           <div className="p-8 grid place-items-center"><Loader2 className="animate-spin text-muted-foreground" /></div>
@@ -151,11 +178,11 @@ function EmpresasPage() {
           <ul className="divide-y">
             {rows.map((c) => (
               <li key={c.id} className="grid grid-cols-12 px-4 py-3 items-center text-sm">
-                <div className="col-span-3 min-w-0">
+                <div className="col-span-2 min-w-0">
                   <div className="font-medium truncate">{c.nome}</div>
                   <div className="text-xs text-muted-foreground truncate">{c.slug}</div>
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-1">
                   <StatusBadge s={c.status_cobranca} />
                 </div>
                 <div className="col-span-2 text-xs text-muted-foreground">
@@ -167,7 +194,7 @@ function EmpresasPage() {
                 <div className="col-span-1 text-xs text-muted-foreground">
                   {c.ultima_atividade ? new Date(c.ultima_atividade).toLocaleDateString("pt-BR") : "—"}
                 </div>
-                <div className="col-span-2 flex justify-end gap-1">
+                <div className="col-span-4 flex justify-end flex-wrap gap-1">
                   <Button size="sm" variant="outline" onClick={() => openDetails(c.id)} title="Ver detalhes">
                     <Eye className="size-3.5" />
                   </Button>
@@ -180,10 +207,17 @@ function EmpresasPage() {
                   <Button size="sm" variant="outline" onClick={() => doExtend(c)} title="Estender trial">
                     <CalendarClock className="size-3.5" />
                   </Button>
-                  <Button size="sm" variant="outline" onClick={() => toggleSuspend(c)}
-                    title={c.status_cobranca === "suspenso" ? "Reativar" : "Suspender"}>
-                    {c.status_cobranca === "suspenso" ? <Play className="size-3.5" /> : <Pause className="size-3.5" />}
-                  </Button>
+                  {c.status_cobranca !== "ativo" && (
+                    <Button size="sm" variant="outline" onClick={() => setActivationTarget({ id: c.id, nome: c.nome })}
+                      disabled={activating} title="Ativar cliente manualmente" aria-label={`Ativar cliente ${c.nome} manualmente`}>
+                      <Play className="size-3.5 mr-1" /> Ativar
+                    </Button>
+                  )}
+                  {c.status_cobranca !== "suspenso" && (
+                    <Button size="sm" variant="outline" onClick={() => toggleSuspend(c)} title="Suspender">
+                      <Pause className="size-3.5" />
+                    </Button>
+                  )}
                   <Button size="sm" onClick={() => impersonate(c.id)} title="Entrar como">
                     <LogIn className="size-3.5 mr-1" /> Entrar
                   </Button>
@@ -192,7 +226,27 @@ function EmpresasPage() {
             ))}
           </ul>
         )}
+        </div>
       </Card>
+
+      <AlertDialog open={!!activationTarget} onOpenChange={(open) => { if (!open && !activating) setActivationTarget(null); }}>
+        <AlertDialogContent className="max-w-[calc(100%-2rem)] sm:max-w-lg">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Ativar cliente manualmente?</AlertDialogTitle>
+            <AlertDialogDescription>
+              A empresa "{activationTarget?.nome}" ficará ativa e terá o acesso liberado, sem depender da confirmação de pagamento.
+              Esta ação não registra pagamento nem adiciona créditos de IA.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={activating}>Cancelar</AlertDialogCancel>
+            <Button onClick={doActivate} disabled={activating}>
+              {activating ? <Loader2 className="size-4 mr-2 animate-spin" /> : <Play className="size-4 mr-2" />}
+              {activating ? "Ativando…" : "Confirmar ativação"}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {pages > 1 && (
         <div className="flex items-center justify-between text-sm">
@@ -291,5 +345,7 @@ function Field({ k, v }: { k: string; v: any }) {
 function StatusBadge({ s }: { s: string }) {
   if (s === "ativo") return <Badge className="bg-primary">Ativa</Badge>;
   if (s === "trial") return <Badge variant="secondary">Trial</Badge>;
+  if (s === "pendente") return <Badge variant="secondary">Pendente</Badge>;
+  if (s === "checkout_pending") return <Badge variant="secondary">Aguardando pagamento</Badge>;
   return <Badge variant="destructive">Suspensa</Badge>;
 }
