@@ -154,15 +154,15 @@ function EmpresasPage() {
           <h1 className="text-2xl font-bold tracking-tight">Empresas</h1>
           <p className="text-sm text-muted-foreground">{total} no total</p>
         </div>
-        <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); setPage(0); reload(); }}>
-          <Input placeholder="Buscar por nome…" value={search} onChange={(e) => setSearch(e.target.value)} className="w-64" />
+        <form className="flex max-w-full gap-2" onSubmit={(e) => { e.preventDefault(); setPage(0); reload(); }}>
+          <Input placeholder="Buscar por nome…" value={search} onChange={(e) => setSearch(e.target.value)} className="w-64 min-w-0" />
           <Button type="submit" variant="outline">Buscar</Button>
         </form>
       </div>
 
-      <Card className="overflow-x-auto">
-        <div className="min-w-[1050px]">
-        <div className="grid grid-cols-12 text-xs font-medium text-muted-foreground bg-muted/50 px-4 py-2">
+      <Card className="overflow-hidden">
+        <div>
+        <div className="hidden xl:grid grid-cols-12 text-xs font-medium text-muted-foreground bg-muted/50 px-4 py-2">
           <div className="col-span-2">Nome</div>
           <div className="col-span-1">Status</div>
           <div className="col-span-2">Trial até</div>
@@ -177,24 +177,27 @@ function EmpresasPage() {
         ) : (
           <ul className="divide-y">
             {rows.map((c) => (
-              <li key={c.id} className="grid grid-cols-12 px-4 py-3 items-center text-sm">
-                <div className="col-span-2 min-w-0">
+              <li key={c.id} className="grid grid-cols-2 xl:grid-cols-12 gap-y-3 gap-x-2 px-4 py-3 items-center text-sm">
+                <div className="col-span-1 xl:col-span-2 min-w-0">
                   <div className="font-medium truncate">{c.nome}</div>
                   <div className="text-xs text-muted-foreground truncate">{c.slug}</div>
                 </div>
-                <div className="col-span-1">
+                <div className="col-span-1 flex justify-end xl:justify-start">
                   <StatusBadge s={c.status_cobranca} />
                 </div>
-                <div className="col-span-2 text-xs text-muted-foreground">
+                <div className="col-span-1 xl:col-span-2 text-xs text-muted-foreground">
+                  <span className="xl:hidden">Trial até: </span>
                   {c.trial_ate ? new Date(c.trial_ate).toLocaleDateString("pt-BR") : "—"}
                 </div>
-                <div className="col-span-2 text-xs text-muted-foreground">
+                <div className="col-span-1 xl:col-span-2 text-xs text-muted-foreground">
+                  <span className="xl:hidden">Criada: </span>
                   {new Date(c.created_at).toLocaleDateString("pt-BR")}
                 </div>
                 <div className="col-span-1 text-xs text-muted-foreground">
+                  <span className="xl:hidden">Atividade: </span>
                   {c.ultima_atividade ? new Date(c.ultima_atividade).toLocaleDateString("pt-BR") : "—"}
                 </div>
-                <div className="col-span-4 flex justify-end flex-wrap gap-1">
+                <div className="col-span-2 xl:col-span-4 flex justify-end flex-wrap gap-1">
                   <Button size="sm" variant="outline" onClick={() => openDetails(c.id)} title="Ver detalhes">
                     <Eye className="size-3.5" />
                   </Button>
