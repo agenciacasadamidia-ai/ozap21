@@ -1734,6 +1734,95 @@ export type Database = {
         }
         Relationships: []
       }
+      pp_admins: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          role: string
+          senha_hash: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          role?: string
+          senha_hash: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          role?: string
+          senha_hash?: string
+        }
+        Relationships: []
+      }
+      pp_favoritos: {
+        Row: {
+          canal_id: string
+          created_at: string
+          id: string
+          usuario_id: string
+        }
+        Insert: {
+          canal_id: string
+          created_at?: string
+          id?: string
+          usuario_id: string
+        }
+        Update: {
+          canal_id?: string
+          created_at?: string
+          id?: string
+          usuario_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pp_favoritos_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "pp_usuarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pp_usuarios: {
+        Row: {
+          created_at: string
+          expiracao: string | null
+          id: string
+          m3u8_url: string | null
+          nome: string
+          senha_hash: string
+          status: Database["public"]["Enums"]["pp_status"]
+          updated_at: string
+          usuario: string
+        }
+        Insert: {
+          created_at?: string
+          expiracao?: string | null
+          id?: string
+          m3u8_url?: string | null
+          nome: string
+          senha_hash: string
+          status?: Database["public"]["Enums"]["pp_status"]
+          updated_at?: string
+          usuario: string
+        }
+        Update: {
+          created_at?: string
+          expiracao?: string | null
+          id?: string
+          m3u8_url?: string | null
+          nome?: string
+          senha_hash?: string
+          status?: Database["public"]["Enums"]["pp_status"]
+          updated_at?: string
+          usuario?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -1786,6 +1875,7 @@ export type Database = {
       fin_tipo: "receita" | "despesa"
       stage_tipo: "normal" | "ganho" | "perda"
       tenant_role: "owner" | "admin" | "atendente"
+      pp_status: "ativo" | "bloqueado" | "expirado"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1935,6 +2025,7 @@ export const Constants = {
       fin_tipo: ["receita", "despesa"],
       stage_tipo: ["normal", "ganho", "perda"],
       tenant_role: ["owner", "admin", "atendente"],
+      pp_status: ["ativo", "bloqueado", "expirado"],
     },
   },
 } as const

@@ -20,6 +20,9 @@ import { Route as ReembolsoRouteImport } from './routes/reembolso'
 import { Route as ResetSenhaRouteImport } from './routes/reset-senha'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as TrocarSenhaRouteImport } from './routes/trocar-senha'
+import { Route as AdminEstatisticasRouteImport } from './routes/admin/estatisticas'
+import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as AdminUsuariosRouteImport } from './routes/admin/usuarios'
 import { Route as AppAgenteRouteImport } from './routes/app/agente'
 import { Route as AppCampanhasRouteImport } from './routes/app/campanhas'
 import { Route as AppCheckoutRouteImport } from './routes/app/checkout'
@@ -56,9 +59,12 @@ import { Route as MasterEmpresasRouteImport } from './routes/master/empresas'
 import { Route as MasterNovaEmpresaRouteImport } from './routes/master/nova-empresa'
 import { Route as MasterPainelRouteImport } from './routes/master/painel'
 import { Route as MasterPlanosRouteImport } from './routes/master/planos'
+import { Route as PlayerIndexRouteImport } from './routes/player/index'
+import { Route as PlayerLoginRouteImport } from './routes/player/login'
 import { Route as ApiPublicGoogleCallbackRouteImport } from './routes/api/public/google-callback'
 import { Route as ApiPublicWhatsappWebhookRouteImport } from './routes/api/public/whatsapp-webhook'
 import { Route as AppAgenteAvancadoRouteImport } from './routes/app/agente.avancado'
+import { Route as PlayerCanalIdRouteImport } from './routes/player/canal/$id'
 import { Route as ApiPublicBillingWebhookRouteImport } from './routes/api/public/billing/webhook'
 import { Route as ApiPublicHooksProcessCampaignsRouteImport } from './routes/api/public/hooks/process-campaigns'
 import { Route as ApiPublicV1SplatRouteImport } from './routes/api/public/v1/$'
@@ -116,6 +122,21 @@ const TermosRoute = TermosRouteImport.update({
 const TrocarSenhaRoute = TrocarSenhaRouteImport.update({
   id: '/trocar-senha',
   path: '/trocar-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminEstatisticasRoute = AdminEstatisticasRouteImport.update({
+  id: '/admin/estatisticas',
+  path: '/admin/estatisticas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminUsuariosRoute = AdminUsuariosRouteImport.update({
+  id: '/admin/usuarios',
+  path: '/admin/usuarios',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppAgenteRoute = AppAgenteRouteImport.update({
@@ -298,6 +319,16 @@ const MasterPlanosRoute = MasterPlanosRouteImport.update({
   path: '/planos',
   getParentRoute: () => MasterRoute,
 } as any)
+const PlayerIndexRoute = PlayerIndexRouteImport.update({
+  id: '/player/',
+  path: '/player/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlayerLoginRoute = PlayerLoginRouteImport.update({
+  id: '/player/login',
+  path: '/player/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicGoogleCallbackRoute = ApiPublicGoogleCallbackRouteImport.update({
   id: '/api/public/google-callback',
   path: '/api/public/google-callback',
@@ -313,6 +344,11 @@ const AppAgenteAvancadoRoute = AppAgenteAvancadoRouteImport.update({
   id: '/avancado',
   path: '/avancado',
   getParentRoute: () => AppAgenteRoute,
+} as any)
+const PlayerCanalIdRoute = PlayerCanalIdRouteImport.update({
+  id: '/player/canal/$id',
+  path: '/player/canal/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicBillingWebhookRoute = ApiPublicBillingWebhookRouteImport.update({
   id: '/api/public/billing/webhook',
@@ -343,6 +379,9 @@ export interface FileRoutesByFullPath {
   '/reset-senha': typeof ResetSenhaRoute
   '/termos': typeof TermosRoute
   '/trocar-senha': typeof TrocarSenhaRoute
+  '/admin/estatisticas': typeof AdminEstatisticasRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
   '/app/agente': typeof AppAgenteRouteWithChildren
   '/app/campanhas': typeof AppCampanhasRoute
   '/app/checkout': typeof AppCheckoutRoute
@@ -377,11 +416,14 @@ export interface FileRoutesByFullPath {
   '/master/nova-empresa': typeof MasterNovaEmpresaRoute
   '/master/painel': typeof MasterPainelRoute
   '/master/planos': typeof MasterPlanosRoute
+  '/player/login': typeof PlayerLoginRoute
   '/demo/': typeof DemoIndexRoute
   '/master/': typeof MasterIndexRoute
+  '/player/': typeof PlayerIndexRoute
   '/api/public/google-callback': typeof ApiPublicGoogleCallbackRoute
   '/api/public/whatsapp-webhook': typeof ApiPublicWhatsappWebhookRoute
   '/app/agente/avancado': typeof AppAgenteAvancadoRoute
+  '/player/canal/$id': typeof PlayerCanalIdRoute
   '/api/public/billing/webhook': typeof ApiPublicBillingWebhookRoute
   '/api/public/hooks/process-campaigns': typeof ApiPublicHooksProcessCampaignsRoute
   '/api/public/v1/$': typeof ApiPublicV1SplatRoute
@@ -396,6 +438,9 @@ export interface FileRoutesByTo {
   '/reset-senha': typeof ResetSenhaRoute
   '/termos': typeof TermosRoute
   '/trocar-senha': typeof TrocarSenhaRoute
+  '/admin/estatisticas': typeof AdminEstatisticasRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
   '/app/agente': typeof AppAgenteRouteWithChildren
   '/app/campanhas': typeof AppCampanhasRoute
   '/app/checkout': typeof AppCheckoutRoute
@@ -430,11 +475,14 @@ export interface FileRoutesByTo {
   '/master/nova-empresa': typeof MasterNovaEmpresaRoute
   '/master/painel': typeof MasterPainelRoute
   '/master/planos': typeof MasterPlanosRoute
+  '/player/login': typeof PlayerLoginRoute
   '/demo': typeof DemoIndexRoute
   '/master': typeof MasterIndexRoute
+  '/player': typeof PlayerIndexRoute
   '/api/public/google-callback': typeof ApiPublicGoogleCallbackRoute
   '/api/public/whatsapp-webhook': typeof ApiPublicWhatsappWebhookRoute
   '/app/agente/avancado': typeof AppAgenteAvancadoRoute
+  '/player/canal/$id': typeof PlayerCanalIdRoute
   '/api/public/billing/webhook': typeof ApiPublicBillingWebhookRoute
   '/api/public/hooks/process-campaigns': typeof ApiPublicHooksProcessCampaignsRoute
   '/api/public/v1/$': typeof ApiPublicV1SplatRoute
@@ -452,6 +500,9 @@ export interface FileRoutesById {
   '/reset-senha': typeof ResetSenhaRoute
   '/termos': typeof TermosRoute
   '/trocar-senha': typeof TrocarSenhaRoute
+  '/admin/estatisticas': typeof AdminEstatisticasRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
   '/app/agente': typeof AppAgenteRouteWithChildren
   '/app/campanhas': typeof AppCampanhasRoute
   '/app/checkout': typeof AppCheckoutRoute
@@ -486,11 +537,14 @@ export interface FileRoutesById {
   '/master/nova-empresa': typeof MasterNovaEmpresaRoute
   '/master/painel': typeof MasterPainelRoute
   '/master/planos': typeof MasterPlanosRoute
+  '/player/login': typeof PlayerLoginRoute
   '/demo/': typeof DemoIndexRoute
   '/master/': typeof MasterIndexRoute
+  '/player/': typeof PlayerIndexRoute
   '/api/public/google-callback': typeof ApiPublicGoogleCallbackRoute
   '/api/public/whatsapp-webhook': typeof ApiPublicWhatsappWebhookRoute
   '/app/agente/avancado': typeof AppAgenteAvancadoRoute
+  '/player/canal/$id': typeof PlayerCanalIdRoute
   '/api/public/billing/webhook': typeof ApiPublicBillingWebhookRoute
   '/api/public/hooks/process-campaigns': typeof ApiPublicHooksProcessCampaignsRoute
   '/api/public/v1/$': typeof ApiPublicV1SplatRoute
@@ -509,6 +563,9 @@ export interface FileRouteTypes {
     | '/reset-senha'
     | '/termos'
     | '/trocar-senha'
+    | '/admin/estatisticas'
+    | '/admin/login'
+    | '/admin/usuarios'
     | '/app/agente'
     | '/app/campanhas'
     | '/app/checkout'
@@ -543,11 +600,14 @@ export interface FileRouteTypes {
     | '/master/nova-empresa'
     | '/master/painel'
     | '/master/planos'
+    | '/player/login'
     | '/demo/'
     | '/master/'
+    | '/player/'
     | '/api/public/google-callback'
     | '/api/public/whatsapp-webhook'
     | '/app/agente/avancado'
+    | '/player/canal/$id'
     | '/api/public/billing/webhook'
     | '/api/public/hooks/process-campaigns'
     | '/api/public/v1/$'
@@ -562,6 +622,9 @@ export interface FileRouteTypes {
     | '/reset-senha'
     | '/termos'
     | '/trocar-senha'
+    | '/admin/estatisticas'
+    | '/admin/login'
+    | '/admin/usuarios'
     | '/app/agente'
     | '/app/campanhas'
     | '/app/checkout'
@@ -596,11 +659,14 @@ export interface FileRouteTypes {
     | '/master/nova-empresa'
     | '/master/painel'
     | '/master/planos'
+    | '/player/login'
     | '/demo'
     | '/master'
+    | '/player'
     | '/api/public/google-callback'
     | '/api/public/whatsapp-webhook'
     | '/app/agente/avancado'
+    | '/player/canal/$id'
     | '/api/public/billing/webhook'
     | '/api/public/hooks/process-campaigns'
     | '/api/public/v1/$'
@@ -617,6 +683,9 @@ export interface FileRouteTypes {
     | '/reset-senha'
     | '/termos'
     | '/trocar-senha'
+    | '/admin/estatisticas'
+    | '/admin/login'
+    | '/admin/usuarios'
     | '/app/agente'
     | '/app/campanhas'
     | '/app/checkout'
@@ -651,11 +720,14 @@ export interface FileRouteTypes {
     | '/master/nova-empresa'
     | '/master/painel'
     | '/master/planos'
+    | '/player/login'
     | '/demo/'
     | '/master/'
+    | '/player/'
     | '/api/public/google-callback'
     | '/api/public/whatsapp-webhook'
     | '/app/agente/avancado'
+    | '/player/canal/$id'
     | '/api/public/billing/webhook'
     | '/api/public/hooks/process-campaigns'
     | '/api/public/v1/$'
@@ -673,9 +745,15 @@ export interface RootRouteChildren {
   ResetSenhaRoute: typeof ResetSenhaRoute
   TermosRoute: typeof TermosRoute
   TrocarSenhaRoute: typeof TrocarSenhaRoute
+  AdminEstatisticasRoute: typeof AdminEstatisticasRoute
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminUsuariosRoute: typeof AdminUsuariosRoute
   CsatTokenRoute: typeof CsatTokenRoute
+  PlayerLoginRoute: typeof PlayerLoginRoute
+  PlayerIndexRoute: typeof PlayerIndexRoute
   ApiPublicGoogleCallbackRoute: typeof ApiPublicGoogleCallbackRoute
   ApiPublicWhatsappWebhookRoute: typeof ApiPublicWhatsappWebhookRoute
+  PlayerCanalIdRoute: typeof PlayerCanalIdRoute
   ApiPublicBillingWebhookRoute: typeof ApiPublicBillingWebhookRoute
   ApiPublicHooksProcessCampaignsRoute: typeof ApiPublicHooksProcessCampaignsRoute
   ApiPublicV1SplatRoute: typeof ApiPublicV1SplatRoute
@@ -758,6 +836,27 @@ declare module '@tanstack/react-router' {
       path: '/trocar-senha'
       fullPath: '/trocar-senha'
       preLoaderRoute: typeof TrocarSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/estatisticas': {
+      id: '/admin/estatisticas'
+      path: '/admin/estatisticas'
+      fullPath: '/admin/estatisticas'
+      preLoaderRoute: typeof AdminEstatisticasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/usuarios': {
+      id: '/admin/usuarios'
+      path: '/admin/usuarios'
+      fullPath: '/admin/usuarios'
+      preLoaderRoute: typeof AdminUsuariosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/agente': {
@@ -1012,6 +1111,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MasterPlanosRouteImport
       parentRoute: typeof MasterRoute
     }
+    '/player/': {
+      id: '/player/'
+      path: '/player'
+      fullPath: '/player/'
+      preLoaderRoute: typeof PlayerIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/player/login': {
+      id: '/player/login'
+      path: '/player/login'
+      fullPath: '/player/login'
+      preLoaderRoute: typeof PlayerLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/google-callback': {
       id: '/api/public/google-callback'
       path: '/api/public/google-callback'
@@ -1032,6 +1145,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/agente/avancado'
       preLoaderRoute: typeof AppAgenteAvancadoRouteImport
       parentRoute: typeof AppAgenteRoute
+    }
+    '/player/canal/$id': {
+      id: '/player/canal/$id'
+      path: '/player/canal/$id'
+      fullPath: '/player/canal/$id'
+      preLoaderRoute: typeof PlayerCanalIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/billing/webhook': {
       id: '/api/public/billing/webhook'
@@ -1176,9 +1296,15 @@ const rootRouteChildren: RootRouteChildren = {
   ResetSenhaRoute: ResetSenhaRoute,
   TermosRoute: TermosRoute,
   TrocarSenhaRoute: TrocarSenhaRoute,
+  AdminEstatisticasRoute: AdminEstatisticasRoute,
+  AdminLoginRoute: AdminLoginRoute,
+  AdminUsuariosRoute: AdminUsuariosRoute,
   CsatTokenRoute: CsatTokenRoute,
+  PlayerLoginRoute: PlayerLoginRoute,
+  PlayerIndexRoute: PlayerIndexRoute,
   ApiPublicGoogleCallbackRoute: ApiPublicGoogleCallbackRoute,
   ApiPublicWhatsappWebhookRoute: ApiPublicWhatsappWebhookRoute,
+  PlayerCanalIdRoute: PlayerCanalIdRoute,
   ApiPublicBillingWebhookRoute: ApiPublicBillingWebhookRoute,
   ApiPublicHooksProcessCampaignsRoute: ApiPublicHooksProcessCampaignsRoute,
   ApiPublicV1SplatRoute: ApiPublicV1SplatRoute,
